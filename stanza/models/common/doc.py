@@ -568,8 +568,8 @@ class Token(StanzaObject):
         self._misc = token_entry.get(MISC, None)
         self._ner = token_entry.get(NER, None)
         self._words = words if words is not None else []
-        self._start_char = None
-        self._end_char = None
+        self._start_char = token_entry.get(START_CHAR, None)
+        self._end_char = token_entry.get(END_CHAR, None)
         self._sent = None
 
         if self._misc is not None:
@@ -664,7 +664,7 @@ class Token(StanzaObject):
     def __repr__(self):
         return json.dumps(self.to_dict(), indent=2, ensure_ascii=False)
 
-    def to_dict(self, fields=[ID, TEXT, NER, MISC]):
+    def to_dict(self, fields=[ID, TEXT, NER, MISC, START_CHAR, END_CHAR]):
         """ Dumps the token into a list of dictionary for this token with its extended words
         if the token is a multi-word token.
         """
@@ -712,6 +712,8 @@ class Word(StanzaObject):
         self._deprel = word_entry.get(DEPREL, None)
         self._deps = word_entry.get(DEPS, None)
         self._misc = word_entry.get(MISC, None)
+        self._start_char = word_entry.get(START_CHAR, None)
+        self._end_char = word_entry.get(END_CHAR, None)
         self._parent = None
         self._sent = None
 
@@ -831,6 +833,16 @@ class Word(StanzaObject):
         self._misc = value if self._is_null(value) == False else None
 
     @property
+    def start_char(self):
+        """ Access the start character index for this token in the raw text. """
+        return self._start_char
+
+    @property
+    def end_char(self):
+        """ Access the end character index for this token in the raw text. """
+        return self._end_char
+
+    @property
     def parent(self):
         """ Access the parent token of this word. In the case of a multi-word token, a token can be the parent of
         multiple words. Note that this should return a reference to the parent token object.
@@ -867,7 +879,7 @@ class Word(StanzaObject):
     def __repr__(self):
         return json.dumps(self.to_dict(), indent=2, ensure_ascii=False)
 
-    def to_dict(self, fields=[ID, TEXT, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC]):
+    def to_dict(self, fields=[ID, TEXT, LEMMA, UPOS, XPOS, FEATS, HEAD, DEPREL, DEPS, MISC, START_CHAR, END_CHAR]):
         """ Dumps the word into a dictionary.
         """
         word_dict = {}
