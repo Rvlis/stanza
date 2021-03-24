@@ -95,6 +95,10 @@ def update_pred_regex(raw, pred):
     """
     spans = find_spans(raw)
 
+    # for now, turn this off for languages such as vi where we operate on multiple characters at once
+    if any(len(x) > 1 for x in raw):
+        return pred
+
     for span_begin, span_end in spans:
         text = "".join(raw[span_begin:span_end])
         for match in MASK_RE.finditer(text):
